@@ -1,0 +1,5 @@
+{
+  "taskApi": {
+    "baseUrl": "TASK_API_BASE_URL"
+  }
+}

@@ -1,1 +1,5 @@
-{}
+{
+  "taskApi": {
+    "baseUrl": "https://tasks-api.example.com"
+  }
+}
