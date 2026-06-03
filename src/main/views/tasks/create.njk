@@ -1,0 +1,73 @@
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% extends "template.njk" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body">
+        <a class="govuk-link" href="/tasks">Back to task list</a>
+      </p>
+
+      <h1 class="govuk-heading-xl">Create a task</h1>
+
+      {% if errorSummary %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errorSummary
+        }) }}
+      {% endif %}
+
+      <form method="post" action="/tasks">
+        {{ govukInput({
+          label: {
+            text: "Title"
+          },
+          id: "title",
+          name: "title",
+          value: form.title
+        }) }}
+
+        {{ govukTextarea({
+          label: {
+            text: "Description (optional)"
+          },
+          id: "description",
+          name: "description",
+          value: form.description
+        }) }}
+
+        {{ govukSelect({
+          label: {
+            text: "Status (optional)"
+          },
+          id: "status",
+          name: "status",
+          items: statusOptions,
+          value: form.status
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Due date and time"
+          },
+          hint: {
+            text: "For example, 2026-06-15T14:00"
+          },
+          id: "dueDateTime",
+          name: "dueDateTime",
+          type: "datetime-local",
+          value: form.dueDateTime
+        }) }}
+
+        {{ govukButton({
+          text: "Create task"
+        }) }}
+      </form>
+    </div>
+  </div>
+{% endblock %}

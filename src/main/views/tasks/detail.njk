@@ -1,0 +1,78 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% extends "template.njk" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body">
+        <a class="govuk-link" href="/tasks">Back to task list</a>
+      </p>
+
+      <h1 class="govuk-heading-xl">{{ task.title }}</h1>
+
+      {% if errorSummary %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errorSummary
+        }) }}
+      {% endif %}
+
+      {{ govukSummaryList({
+        rows: [
+          {
+            key: { text: "Title" },
+            value: { text: task.title }
+          },
+          {
+            key: { text: "Description" },
+            value: { text: task.description or "—" }
+          },
+          {
+            key: { text: "Status" },
+            value: { text: task.statusLabel }
+          },
+          {
+            key: { text: "Due date" },
+            value: { text: task.dueDateTimeFormatted }
+          },
+          {
+            key: { text: "Created" },
+            value: { text: task.createdAtFormatted }
+          },
+          {
+            key: { text: "Last updated" },
+            value: { text: task.updatedAtFormatted }
+          }
+        ]
+      }) }}
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-6">Update status</h2>
+      <form method="post" action="/tasks/{{ task.id }}/status">
+        {{ govukSelect({
+          id: "status",
+          name: "status",
+          label: {
+            text: "Status"
+          },
+          items: statusOptions,
+          value: task.status
+        }) }}
+        {{ govukButton({
+          text: "Update status"
+        }) }}
+      </form>
+
+      <h2 class="govuk-heading-m govuk-!-margin-top-6">Delete task</h2>
+      <form method="post" action="/tasks/{{ task.id }}/delete">
+        {{ govukButton({
+          text: "Delete task",
+          classes: "govuk-button--warning"
+        }) }}
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console -- server startup and graceful shutdown logging */
 import * as fs from 'fs';
 import * as https from 'https';
 import * as path from 'path';
@@ -38,7 +39,7 @@ function gracefulShutdownHandler(signal: string) {
     console.log('Shutting down application');
     // Close server if it's running
     httpsServer?.close(() => {
-      console.log("HTTPS server closed")
+      console.log('HTTPS server closed');
     });
   }, 4000);
 }

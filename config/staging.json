@@ -1,0 +1,5 @@
+{
+  "taskApi": {
+    "baseUrl": "https://tasks-api.staging.example.com"
+  }
+}
