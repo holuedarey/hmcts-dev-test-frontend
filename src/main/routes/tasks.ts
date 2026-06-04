@@ -133,7 +133,7 @@ export default function (app: Application): void {
     }
   });
 
-  app.patch('/tasks/:id/status', async (req: Request, res: Response, next: NextFunction) => {
+  app.post('/tasks/:id/status', async (req: Request, res: Response, next: NextFunction) => {
     const status = req.body.status as TaskStatus;
 
     try {
@@ -175,7 +175,7 @@ export default function (app: Application): void {
     }
   });
 
-  app.delete('/tasks/:id/delete', async (req: Request, res: Response, next: NextFunction) => {
+  app.post('/tasks/:id/delete', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await taskService.delete(req.params.id);
       res.redirect('/tasks');

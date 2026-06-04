@@ -5,7 +5,7 @@ import { Nunjucks } from './modules/nunjucks';
 
 import * as bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import { glob } from 'glob';
 import favicon from 'serve-favicon';
 
@@ -24,24 +24,33 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   res.setHeader('Cache-Control', 'no-cache, max-age=0, must-revalidate, no-store');
   next();
 });
+
+setupDev(app, developmentMode);
 
 glob
   .sync(__dirname + '/routes/**/*.+(ts|js)')
   .map(filename => require(filename))
   .forEach(route => route.default(app));
 
-setupDev(app, developmentMode);
+function notFoundHandler(req: Request, res: Response): void {
+  res.status(404).render('not-found');
+}
 
-// error handler
-app.use((err: HTTPError, req: express.Request, res: express.Response) => {
-  console.log(err);
-  // set locals, only providing error in development
+function errorHandler(err: HTTPError, req: Request, res: Response, next: NextFunction): void {
+  if (!err) {
+    next();
+    return;
+  }
+
   res.locals.message = err.message;
   res.locals.error = env === 'development' ? err : {};
   res.status(err.status || 500);
   res.render('error');
-});
+}
+
+app.use(notFoundHandler);
+app.use(errorHandler);
